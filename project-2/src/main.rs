@@ -3,6 +3,8 @@ mod db;
 mod dtos;
 mod errors;
 mod models;
+mod utils;
+mod middleware;
 
 use axum::{
     Extension,
