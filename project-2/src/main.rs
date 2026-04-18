@@ -6,6 +6,7 @@ mod models;
 mod utils;
 mod middleware;
 mod mail;
+mod handler;
 
 use axum::{
     Extension,

@@ -132,3 +132,9 @@ impl fmt::Display for HttpError {
 }
 
 impl std::error::Error for HttpError {} // allows to treat HttpError as a standard error in Rust --> like Throwing new Error
+
+impl IntoResponse for HttpError {
+    fn into_response(self) -> Response {
+        self.into_http_response() // implements IntoResponse on top our custom HTTP error for treating it as default IntoResponse Error Handler for all routes [Axum Response]
+    }
+}
