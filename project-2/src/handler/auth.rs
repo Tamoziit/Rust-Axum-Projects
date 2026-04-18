@@ -1,5 +1,9 @@
 use axum::{
-    Extension, Json, Router, extract::Query, http::{HeaderMap, StatusCode, header}, response::{IntoResponse, Redirect}, routing::{get, post}
+    Extension, Json, Router,
+    extract::Query,
+    http::{HeaderMap, StatusCode, header},
+    response::{IntoResponse, Redirect},
+    routing::{get, post},
 };
 use axum_extra::extract::cookie::Cookie;
 use chrono::{Duration, Utc};
@@ -158,11 +162,11 @@ pub async fn verify_email(
             return Err(HttpError::bad_request(
                 "Verification Token Expired".to_string(),
             ))?;
-        } else {
-            return Err(HttpError::bad_request(
-                "Invalid Verification Token".to_string(),
-            ))?;
         }
+    } else {
+        return Err(HttpError::bad_request(
+            "Invalid Verification Token".to_string(),
+        ))?;
     }
 
     app_state
@@ -269,11 +273,11 @@ pub async fn reset_password(
             return Err(HttpError::bad_request(
                 "Verification Token Expired".to_string(),
             ))?;
-        } else {
-            return Err(HttpError::bad_request(
-                "Invalid Verification Token".to_string(),
-            ))?;
         }
+    } else {
+        return Err(HttpError::bad_request(
+            "Invalid Verification Token".to_string(),
+        ))?;
     }
 
     let user_id = uuid::Uuid::parse_str(&user.id.to_string()).unwrap();
