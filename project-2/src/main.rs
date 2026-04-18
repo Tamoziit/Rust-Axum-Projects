@@ -2,26 +2,26 @@ mod config;
 mod db;
 mod dtos;
 mod errors;
-mod models;
-mod utils;
-mod middleware;
-mod mail;
 mod handler;
+mod mail;
+mod middleware;
+mod models;
+mod routes;
+mod utils;
 
-use axum::{
-    Extension,
-    Router,
-    http::{
-        HeaderValue, Method,
-        header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE},
-    },
+use axum::http::{
+    HeaderValue, Method,
+    header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE},
 };
 use config::Config;
 use db::DBClient;
 use dotenv::dotenv;
 use sqlx::postgres::PgPoolOptions;
+use std::sync::Arc;
 use tower_http::cors::CorsLayer;
 use tracing_subscriber::filter::LevelFilter;
+
+use crate::routes::create_router;
 
 #[derive(Debug, Clone)]
 pub struct AppState {
@@ -61,14 +61,12 @@ async fn main() {
         .allow_methods([Method::GET, Method::POST, Method::PUT]); // CORS configuration
 
     let db_client = DBClient::new(pool);
-
     let app_state = AppState {
         env: config.clone(),
         db_client,
     };
-    let app = Router::new()
-        .layer(Extension(app_state))
-        .layer(cors.clone()); // app init [analogous app = expresS()]
+
+    let app = create_router(Arc::new(app_state.clone())).layer(cors.clone()); // app init [analogous app = express(), app.use(cors()), app.use("/", routes)]
 
     println!("{}", format!("Server is running on PORT: {}", config.port));
 
